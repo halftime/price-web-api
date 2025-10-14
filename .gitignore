@@ -1,0 +1,8 @@
+/.vscode/**
+/bin/**
+/obj/**
+
+# Ignore SQLite and other local databases
+*.db
+*.db-shm
+*.db-wal

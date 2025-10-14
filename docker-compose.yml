@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  pricewebapi:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/app
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+    command: ["dotnet", "price-web-api.dll"]
