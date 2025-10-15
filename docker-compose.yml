@@ -1,11 +1,17 @@
 version: '3.8'
+
 services:
   pricewebapi:
     build: .
-    ports:
-      - "8080:80"
     volumes:
       - .:/app
-    environment:
-      - ASPNETCORE_URLS=http://+:80
     command: ["dotnet", "price-web-api.dll"]
+    ports:
+      - "8080:8080"  # Maps port 8080 on the host to port 8080 in the container
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+
+# networks:
+#   internal_net:
+#     internal: true
+#     driver: bridge

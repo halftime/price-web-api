@@ -1,11 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using price_web_api.Models;
 
-namespace price_web_api.Data
+namespace price_web_api.Data;
+
+public class PriceContext : DbContext
 {
-    public class PriceContext : DbContext
+    public PriceContext(DbContextOptions<PriceContext> options) : base(options) { }
+    public DbSet<PriceRecord> PriceRecords { get; set; } = null!;
+    public DbSet<FundInfo> FundInfos { get; set; } = null!;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public PriceContext(DbContextOptions<PriceContext> options) : base(options) { }
-        public DbSet<PriceRecord> PriceRecords { get; set; }
+        modelBuilder.Entity<PriceRecord>()
+            .HasKey(pr => new { pr.FundId, pr.Date });
+
+        modelBuilder.Entity<PriceRecord>()
+            .HasOne(pr => pr.FundData)
+            .WithMany(f => f.PriceRecords);
     }
 }

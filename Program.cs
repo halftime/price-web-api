@@ -21,25 +21,21 @@ using (var scope = app.Services.CreateScope())
     db.Database.EnsureCreated();
 }
 
-// Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
-//     app.MapOpenApi();
-// }
+app.MapPost("/addfund", async (FundInfo fund, PriceContext db) =>
+{
+    db.FundInfos.Add(fund);
+    await db.SaveChangesAsync();
+    return Results.Created($"/addfund/{fund.Id}", fund);
+});
+
+
 app.MapGet("/prices", async (HttpContext http, PriceContext db) =>
 {
     //var prices = await db.PriceRecords.ToListAsync();
     return Results.Ok(new object[] { new { Id = 1, ProductName = "Sample Product", Price = 9.99M, Timestamp = DateTime.UtcNow } });
 });
 
-app.MapPost("/prices", async (PriceRecord record, PriceContext db) =>
-{
-    db.PriceRecords.Add(record);
-    await db.SaveChangesAsync();
-    return Results.Created($"/prices/{record.Id}", record);
-});
-
 // Landing page GET /
-app.MapGet("/", () => Results.Content("<html><body><h1>Hello World</h1></body></html>", "text/html"));
+app.MapGet("/test", () => Results.Content("<html><body><h1>test ok</h1></body></html>", "text/html"));
 
 app.Run();
