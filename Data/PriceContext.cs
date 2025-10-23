@@ -11,11 +11,14 @@ public class PriceContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<PriceRecord>()
-            .HasKey(pr => new { pr.FundId, pr.Date });
+        modelBuilder.Entity<FundInfo>()
+            .HasKey(f => f.fundId);
 
         modelBuilder.Entity<PriceRecord>()
-            .HasOne(pr => pr.FundData)
-            .WithMany(f => f.PriceRecords);
+            .HasKey(pr => new { pr.fundId, pr.date });
+
+        modelBuilder.Entity<PriceRecord>()
+            .HasOne(pr => pr.fundData)
+            .WithMany(f => f.priceRecords);
     }
 }

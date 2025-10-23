@@ -6,22 +6,36 @@ using Microsoft.EntityFrameworkCore;
 namespace price_web_api.Models;
     public class PriceRecord
 {
-    public required int FundId { get; set; }
+    public int Key => HashCode.Combine(fundId, date);
 
-    [ForeignKey("FundId")]
-    public required virtual FundInfo FundData { get; set; }
+    public required int fundId { get; set; }
 
-    public required decimal Close { get; set; } 
+    [ForeignKey("fundId")]
+    public virtual FundInfo fundData { get; set; }
 
-    public decimal Open { get; set; }
+    [Column(TypeName = "decimal(8,2)")]
+    public decimal close { get; set; }
 
-    public decimal High { get; set; }
+    [Column(TypeName = "decimal(8,2)")]
+    public decimal open { get; set; }
 
-    public decimal Low { get; set; }
+    [Column(TypeName = "decimal(8,2)")]
+    public decimal high { get; set; }
 
-    public decimal Volume { get; set; }
-    public required DateOnly Date { get; set; }
+    [Column(TypeName = "decimal(8,2)")]
+    public decimal low { get; set; }
+
+   [Column(TypeName = "decimal(8,2)")]
+    public decimal nav { get; set; }
+
+    public int volume { get; set; }
+    public required DateOnly date { get; set; }
 
     // [Key]
     // public string RecordKey => $"{this.FundData.BloombergTicker}|{this.Date.ToString("dd-MM-yyyy")}";
+
+    public override string ToString()
+    {
+        return $"PriceRecord [Key={Key}, fundId={fundId}, Date={date}, Close={close}, Open={open}, High={high}, Low={low}, NAV={nav}, Volume={volume}]";
+    }
 }
