@@ -13,7 +13,7 @@ public static partial class LocalOnlyEndpoint
             return Results.BadRequest("Request body is empty or could not be deserialized as FundInfo.");
         }
 
-        Console.WriteLine("received request to add fund:", fund.bloombergTicker);
+        //Console.WriteLine("received request to add fund:", fund.bloombergTicker);
 
         if (string.IsNullOrWhiteSpace(fund.bloombergTicker))
         {
@@ -24,7 +24,7 @@ public static partial class LocalOnlyEndpoint
         var exists = await db.FundInfos.AnyAsync(f => f.bloombergTicker == fund.bloombergTicker);
         if (exists)
         {
-            return Results.Conflict($"A fund with BloombergTicker '{fund.bloombergTicker}' already exists.");
+            return Results.Conflict($"A fund with BloombergTicker '{fund.bloombergTicker}' already exists."); // return code 409, conflict/duplicate
         }
 
         try

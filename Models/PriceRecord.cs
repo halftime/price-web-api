@@ -1,17 +1,22 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace price_web_api.Models;
     public class PriceRecord
 {
-    public int Key => HashCode.Combine(fundId, date);
+    
 
     public required int fundId { get; set; }
 
     [ForeignKey("fundId")]
+    [JsonIgnore]
     public virtual FundInfo fundData { get; set; }
+
+    [JsonIgnore]
+    public int Key => HashCode.Combine(fundId, date);
 
     [Column(TypeName = "decimal(8,2)")]
     public decimal close { get; set; }

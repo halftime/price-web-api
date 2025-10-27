@@ -17,13 +17,29 @@ public static partial class LocalOnlyEndpoint
         var fundExists = await db.FundInfos.AnyAsync(f => f.fundId == priceRecord.fundId);
         if (!fundExists)
         {
-            return Results.BadRequest($"Fund with Id {priceRecord.fundId} does not exist.");
+            return Results.Problem($"Fund with Id {priceRecord.fundId} does not exist.");
         }
 
         db.PriceRecords.Add(priceRecord);
-        await db.SaveChangesAsync();
+        try
+        {
+            await db.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException ex) // duplicate 
+        {
+            return Results.Conflict($"A concurrency conflict occurred while adding the price record: {ex.GetBaseException().Message}");
+        }
+        catch (DbUpdateException ex) // duplicate key 
+        {
+            return Results.Conflict($"A database update error occurred while adding the price record: {ex.GetBaseException().Message}");
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem($"Unexpected error while adding price record: {ex.Message}");
+        }
 
         Console.WriteLine($"Price record added: {priceRecord.Key} on {priceRecord.date}");
+
         return Results.Created($"/prices/{priceRecord.Key}/{priceRecord.date}", priceRecord);
     }
 }

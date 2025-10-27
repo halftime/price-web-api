@@ -33,7 +33,9 @@ app.MapPost("addfund", LocalOnlyEndpoint.AddFund).AddEndpointFilter<LocalNetwork
 
 // Get methods for retrieving records
 app.MapGet("funds/{ticker}", RemoteEndPoint.GetFund);
-app.MapGet("prices/{ticker}/{date}", RemoteEndPoint.GetPriceRecord);
+app.MapGet("prices/{ticker}", RemoteEndPoint.GetPriceRecordsByTicker);
+
+app.MapGet("pricerecord/{ticker}/{date}", RemoteEndPoint.GetPriceRecord);
 //
 
 app.Run();
