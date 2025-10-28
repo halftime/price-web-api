@@ -19,6 +19,8 @@ namespace price_web_api.Models;
     public int Key => HashCode.Combine(fundId, date);
 
     [Column(TypeName = "decimal(8,2)")]
+    [Required(ErrorMessage = "close is required")]
+    [Range(0.1, double.MaxValue, ErrorMessage = "close must be greater than 0")]
     public decimal close { get; set; }
 
     [Column(TypeName = "decimal(8,2)")]
@@ -34,10 +36,9 @@ namespace price_web_api.Models;
     public decimal nav { get; set; }
 
     public int volume { get; set; }
-    public required DateOnly date { get; set; }
 
-    // [Key]
-    // public string RecordKey => $"{this.FundData.BloombergTicker}|{this.Date.ToString("dd-MM-yyyy")}";
+    [Required(ErrorMessage = "date is required")]
+    public DateOnly date { get; set; }
 
     public override string ToString()
     {
