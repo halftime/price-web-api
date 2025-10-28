@@ -16,8 +16,9 @@ docker build --pull --rm -f "Dockerfile" -t pricewebapi:latest .
 docker run -d -p 8080:8080 --name pricewebapi pricewebapi:latest
 ```
 
-## API
-Base URL: http://localhost:8080
+## API @ localhost:8080
+
+### [Example in python](https://github.com/halftime/price-fetcher-py)
 
 ### Remote GET api
 
