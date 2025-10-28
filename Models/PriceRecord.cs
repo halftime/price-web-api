@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace price_web_api.Models;
@@ -13,6 +14,7 @@ namespace price_web_api.Models;
 
     [ForeignKey("fundId")]
     [JsonIgnore]
+    [XmlIgnore]
     public virtual FundInfo fundData { get; set; }
 
     [JsonIgnore]

@@ -5,10 +5,11 @@ Because [googlefinance()](https://support.google.com/docs/answer/3093281?hl=en) 
 ## Features
 - [localhost only endpoint](./LocalOnlyEndpoint) to add (httpPOST) fund & pricing data
 - [remote open endpoint](./RemoteEndPoint) to fetch (httpGET) pricing information (to be used in googlespreadsheet)
+- XML API for [IMPORTXML](https://support.google.com/docs/answer/3093342) support
 - Ready for containerization
 
 ## Todo
-- [IMPORTXML](https://support.google.com/docs/answer/3093342) support
+- 
 
 ## Quick start
 
@@ -25,9 +26,10 @@ Base URL: http://localhost:8080
 
 | Function  | url endpoint |
 | ------------- | ------------- |
-| Get fund information | /funds/{ticker}  |
-| Get all prices for a fund  | /prices/{ticker}  |
-| Get daily fund price  | /pricerecord/{ticker}/{date}  |
+| Get ETF/ETC details from ticker | /funds/{ticker}  |
+| Get all daily data for a ticker  | /prices/{ticker}  |
+| Get daily data record  | /pricerecord/{ticker}/{date}  |
+| Get daily data record in XML | /pricerecord.xml/{ticker}/{date}  |
 
 
 ### Localhost only POST api
