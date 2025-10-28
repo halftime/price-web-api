@@ -5,11 +5,8 @@ Because [googlefinance()](https://support.google.com/docs/answer/3093281?hl=en) 
 ## Features
 - [localhost only endpoint](./LocalOnlyEndpoint) to add (httpPOST) fund & pricing data
 - [remote open endpoint](./RemoteEndPoint) to fetch (httpGET) pricing information (to be used in googlespreadsheet)
-- XML API for [IMPORTXML](https://support.google.com/docs/answer/3093342) support
+- XML output supporting [IMPORTXML](https://support.google.com/docs/answer/3093342)
 - Ready for containerization
-
-## Todo
-- 
 
 ## Quick start
 
