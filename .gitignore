@@ -2,6 +2,8 @@
 /bin/**
 /obj/**
 
+*secret*
+
 # Ignore SQLite and other local databases
 *.db
 *.db-shm
