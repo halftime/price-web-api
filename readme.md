@@ -31,7 +31,7 @@ docker run -d -p 8080:8080 --name pricewebapi pricewebapi:latest
 | Get daily data record  | /pricerecord/{ticker}/{date}  |
 | Get daily data record in XML | /pricerecord.xml/{ticker}/{date}  |
 
-### Googlesheets
+### [Googlesheets example](https://docs.google.com/spreadsheets/d/1gQmmdZbtQsx1dtLFz7-i8w_4bGx3qFvNYnwueFmimN4/edit?usp=sharing)
 - *TICKERCELL* being a ticker e.g: V3AA
 - *DATECELL* being a date, YYYY-MM-DD format e.g: 2025-12-31
 - returned floats according to "en_US" (dot as comma) standard
