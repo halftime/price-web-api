@@ -18,9 +18,11 @@ docker run -d -p 8080:8080 --name pricewebapi pricewebapi:latest
 
 ## API @ localhost:8080
 
-### [Example in python](https://github.com/halftime/price-fetcher-py)
+### [Example integration in python](https://github.com/halftime/price-fetcher-py)
 
 ### Remote GET api
+- http://localhost:8080
+- http://ignc.dev:8080
 
 | Function  | url endpoint |
 | ------------- | ------------- |
