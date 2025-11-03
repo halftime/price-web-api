@@ -6,8 +6,8 @@ namespace price_web_api.Data;
 public class PriceContext : DbContext
 {
     public PriceContext(DbContextOptions<PriceContext> options) : base(options) { }
-    public DbSet<PriceRecord> PriceRecords { get; set; } = null!;
-    public DbSet<FundInfo> FundInfos { get; set; } = null!;
+    public DbSet<PriceRecord> PriceRecords { get; set; }
+    public DbSet<FundInfo> FundInfos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

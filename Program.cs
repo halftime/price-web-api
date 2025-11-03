@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PriceContext>(options =>
     options.EnableSensitiveDataLogging()
-           .UseSqlite("Data Source=prices.db"));
+           .UseSqlite(@"Data Source=../prices.db"));
 
 var app = builder.Build();
 

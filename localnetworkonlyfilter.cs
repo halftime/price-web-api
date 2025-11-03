@@ -2,12 +2,12 @@ using System.Net;
 
 public class LocalNetworkOnlyFilter : IEndpointFilter
 {
-    private static readonly HashSet<string> AllowedIps = new()
+    private static readonly HashSet<string> AllowedSubnets = new()
     {
-        "127.0.0.1",          // localhost IPv4
-        "::1",                // localhost IPv6
-        "172.17.0.1",         // Docker bridge gateway
-        // add more if needed: "192.168.1.42", "10.0.0.5", etc.
+        "192.168.0.",         // 192.168.0.x range
+        "192.168.1.",         // 192.168.1.x range (optional)
+        "172.17.0.",        // 172.17.x.x range (Docker default)
+        "172.18.0.",        // 172.18.x.x range (Docker alternative)
     };
 
     public async ValueTask<object?> InvokeAsync(
@@ -25,10 +25,12 @@ public class LocalNetworkOnlyFilter : IEndpointFilter
         if (remoteIp.IsIPv4MappedToIPv6)
             remoteIp = remoteIp.MapToIPv4();
 
-        // Allow only if the string representation matches
-        if (AllowedIps.Contains(remoteIp.ToString()))
+        var ipString = remoteIp.ToString();
+
+        // Check if IP matches any allowed subnet prefix
+        if (AllowedSubnets.Any(subnet => ipString.StartsWith(subnet)))
         {
-            Console.WriteLine($"localnetworkfilter \t IP: {remoteIp} is local, OK");
+            Console.WriteLine($"localnetworkfilter \t IP: {remoteIp} is in allowed subnet, OK");
             return await next(context);
         }
 
