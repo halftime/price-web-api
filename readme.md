@@ -5,7 +5,7 @@ Because [googlefinance()](https://support.google.com/docs/answer/3093281?hl=en) 
 ## Features
 - [localhost only endpoint](./LocalOnlyEndpoint) to add (httpPOST) fund & pricing data
 - [remote open endpoint](./RemoteEndPoint) to fetch (httpGET) pricing information (to be used in googlespreadsheet)
-- XML output supporting [IMPORTXML](https://support.google.com/docs/answer/3093342)
+- XML output supported [IMPORTXML](https://support.google.com/docs/answer/3093342)
 - Ready for containerization
 
 ## Quick start
@@ -29,6 +29,13 @@ docker run -d -p 8080:8080 --name pricewebapi pricewebapi:latest
 | Get daily data record  | /pricerecord/{ticker}/{date}  |
 | Get daily data record in XML | /pricerecord.xml/{ticker}/{date}  |
 
+### Googlesheets
+- TICKERCELL being a ticker e.g: V3AA
+- DATECELL being a date, api needs YYYY-MM-DD format
+- returned floats according to "en_US" (dot as comma) standard
+'''
+=IMPORTXML("http://ignc.dev:8080/pricerecord.xml/" & TICKERCELL & "/" & text(DATECELL;"YYYY-MM-DD");"/PriceRecord/close"; "en_US")
+'''
 
 ### Localhost only POST api
 
