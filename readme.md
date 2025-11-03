@@ -35,9 +35,9 @@ docker run -d -p 8080:8080 --name pricewebapi pricewebapi:latest
 - TICKERCELL being a ticker e.g: V3AA
 - DATECELL being a date, api needs YYYY-MM-DD format
 - returned floats according to "en_US" (dot as comma) standard
-'''
+```
 =IMPORTXML("http://ignc.dev:8080/pricerecord.xml/" & TICKERCELL & "/" & text(DATECELL;"YYYY-MM-DD");"/PriceRecord/close"; "en_US")
-'''
+```
 
 ### Localhost only POST api
 
