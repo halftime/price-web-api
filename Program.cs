@@ -11,11 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure Kestrel for HTTPS
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    var certPath = Environment.GetEnvironmentVariable("ASPNETCORE_Kestrel__Certificates__Default__Path");
-    var keyPath = Environment.GetEnvironmentVariable("ASPNETCORE_Kestrel__Certificates__Default__KeyPath");
+    var certPath = "/app/certs/cloudflare-origin.pem";
+    var keyPath = "/app/certs/cloudflare-origin.key";
 
-    if (!string.IsNullOrEmpty(certPath) && !string.IsNullOrEmpty(keyPath) 
-        && File.Exists(certPath) && File.Exists(keyPath))
+    if (File.Exists(certPath) && File.Exists(keyPath))
     {
         serverOptions.ListenAnyIP(5080); // HTTP
         serverOptions.ListenAnyIP(5081, listenOptions =>
@@ -27,7 +26,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
     {
         // Fallback to HTTP only if certs not found
         serverOptions.ListenAnyIP(5080);
-        Console.WriteLine("HTTPS certificates not found, running HTTP only.");
+        Console.WriteLine("HTTPS certificates not found at /app/certs/, running HTTP only.");
     }
 });
 
