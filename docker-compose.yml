@@ -9,8 +9,8 @@ services:
         - linux/arm64
     image: price-web-api:arm64
     volumes:
-      - price-data:/data
-      - certs:/app/certs:ro 
+#      - price-data:/data
+      - ./certs:/app/certs:ro
 
     ports:
       - "5080:5080"
@@ -23,8 +23,3 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/cloudflare-origin.pem
       - ASPNETCORE_Kestrel__Certificates__Default__KeyPath=/app/certs/cloudflare-origin.key
     restart: unless-stopped
-
-volumes:
-  price-data:
-  certs:
-    external: true
