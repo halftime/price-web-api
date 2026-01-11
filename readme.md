@@ -15,9 +15,9 @@ Because [googlefinance()](https://support.google.com/docs/answer/3093281?hl=en) 
 ### [Example integration in python](https://github.com/halftime/price-fetcher-py)
 
 ### Remote GET api
-- http://localhost:5080
-- http://ignc.dev:5080
-- https port:5081
+- http://localhost:8080
+- http://ignc.dev:8080
+- https port:8081
 
 | Function  | url endpoint |
 | ------------- | ------------- |

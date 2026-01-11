@@ -15,5 +15,5 @@ WORKDIR /app
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "price-web-api.dll"]
 
-EXPOSE 5080
-EXPOSE 5081
+EXPOSE 8080
+EXPOSE 8081

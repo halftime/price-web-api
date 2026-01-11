@@ -16,8 +16,8 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 
     if (File.Exists(certPath) && File.Exists(keyPath))
     {
-        serverOptions.ListenAnyIP(5080); // HTTP
-        serverOptions.ListenAnyIP(5081, listenOptions =>
+        serverOptions.ListenAnyIP(8080); // HTTP
+        serverOptions.ListenAnyIP(8081, listenOptions =>
         {
             listenOptions.UseHttps(certPath, keyPath);
         });
@@ -25,7 +25,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
     else
     {
         // Fallback to HTTP only if certs not found
-        serverOptions.ListenAnyIP(5080);
+        serverOptions.ListenAnyIP(8080);
         Console.WriteLine("HTTPS certificates not found at /app/certs/, running HTTP only.");
     }
 });
