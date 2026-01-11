@@ -13,9 +13,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PriceContext>(options =>
     options.EnableSensitiveDataLogging()
-           .UseSqlite(@"Data Source=../prices.db"));
+           .UseSqlite(@"Data Source=/data/prices.db"));
 
 var app = builder.Build();
+
+// Configure HTTPS redirection and HSTS
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+app.UseHttpsRedirection();
 
 // Ensure SQLite database is created
 using (var scope = app.Services.CreateScope())
