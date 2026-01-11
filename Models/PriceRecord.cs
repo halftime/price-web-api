@@ -6,9 +6,9 @@ using System.Xml.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace price_web_api.Models;
-    public class PriceRecord
+public class PriceRecord
 {
-    
+
 
     public required int fundId { get; set; }
 
@@ -21,8 +21,6 @@ namespace price_web_api.Models;
     public int Key => HashCode.Combine(fundId, date);
 
     [Column(TypeName = "decimal(8,2)")]
-    [Required(ErrorMessage = "close is required")]
-    [Range(0.1, double.MaxValue, ErrorMessage = "close must be greater than 0")]
     public decimal close { get; set; }
 
     [Column(TypeName = "decimal(8,2)")]
@@ -34,7 +32,9 @@ namespace price_web_api.Models;
     [Column(TypeName = "decimal(8,2)")]
     public decimal low { get; set; }
 
-   [Column(TypeName = "decimal(8,2)")]
+    [Required(ErrorMessage = "nav required")]
+    [Range(0.1, double.MaxValue, ErrorMessage = "nav must be greater than 0")]
+    [Column(TypeName = "decimal(8,2)")]
     public decimal nav { get; set; }
 
     public int volume { get; set; }

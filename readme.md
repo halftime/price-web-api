@@ -8,16 +8,10 @@ Because [googlefinance()](https://support.google.com/docs/answer/3093281?hl=en) 
 - XML output supported [IMPORTXML](https://support.google.com/docs/answer/3093342)
 - Ready for containerization
 
-## Quick start
-
-Run using Docker
-```
-docker build --pull --rm -f "Dockerfile" -t pricewebapi:latest .
-docker run -d -p 8080:8080 --name pricewebapi pricewebapi:latest
-```
+## Changes
+    - 01/2026 use NAV instead of close
 
 ## API @ localhost
-
 ### [Example integration in python](https://github.com/halftime/price-fetcher-py)
 
 ### Remote GET api
