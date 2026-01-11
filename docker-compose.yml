@@ -9,8 +9,7 @@ services:
         - linux/arm64
     image: price-web-api:arm64
     volumes:
-#      - price-data:/data
-      - ./certs:/app/certs:ro
+      - ./certs:/home/admin/certs:ro
 
     ports:
       - "5080:5080"
@@ -20,6 +19,6 @@ services:
       - ASPNETCORE_URLS=https://+:5081;http://+:5080
       - ASPNETCORE_HTTPS_PORT=5081
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/cloudflare-origin.pem
-      - ASPNETCORE_Kestrel__Certificates__Default__KeyPath=/app/certs/cloudflare-origin.key
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=./certs/cloudflare-origin.pem
+      - ASPNETCORE_Kestrel__Certificates__Default__KeyPath=./certs/cloudflare-origin.key
     restart: unless-stopped
