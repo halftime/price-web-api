@@ -8,6 +8,29 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Kestrel for HTTPS
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    var certPath = Environment.GetEnvironmentVariable("ASPNETCORE_Kestrel__Certificates__Default__Path");
+    var keyPath = Environment.GetEnvironmentVariable("ASPNETCORE_Kestrel__Certificates__Default__KeyPath");
+
+    if (!string.IsNullOrEmpty(certPath) && !string.IsNullOrEmpty(keyPath) 
+        && File.Exists(certPath) && File.Exists(keyPath))
+    {
+        serverOptions.ListenAnyIP(5080); // HTTP
+        serverOptions.ListenAnyIP(5081, listenOptions =>
+        {
+            listenOptions.UseHttps(certPath, keyPath);
+        });
+    }
+    else
+    {
+        // Fallback to HTTP only if certs not found
+        serverOptions.ListenAnyIP(5080);
+        Console.WriteLine("HTTPS certificates not found, running HTTP only.");
+    }
+});
+
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
