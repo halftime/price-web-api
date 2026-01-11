@@ -1,4 +1,4 @@
-/.vscode/**
+#/.vscode/** # include for muh launch tasks
 /bin/**
 /obj/**
 
