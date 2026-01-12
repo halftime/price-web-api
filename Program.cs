@@ -64,11 +64,12 @@ builder.Services.AddDbContext<PriceContext>(options =>
 var app = builder.Build();
 
 // Configure HTTPS redirection and HSTS
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHsts();
-}
-app.UseHttpsRedirection();
+// Only enable HTTPS redirection if in production AND you want to force HTTPS
+// if (!app.Environment.IsDevelopment())
+// {
+//     app.UseHsts();
+//     app.UseHttpsRedirection();
+// }
 
 // Ensure SQLite database is created
 using (var scope = app.Services.CreateScope())
