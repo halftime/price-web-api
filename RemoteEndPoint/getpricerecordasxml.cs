@@ -50,9 +50,6 @@ public static partial class RemoteEndPoint
             return Results.NotFound();
         }
 
-        result.nonzeroprice = result.calcnotzeroprice();
-        await db.SaveChangesAsync();
-
         var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(PriceRecord), new System.Xml.Serialization.XmlRootAttribute("PriceRecord"));
         using var stringWriter = new StringWriter();
         xmlSerializer.Serialize(stringWriter, result);

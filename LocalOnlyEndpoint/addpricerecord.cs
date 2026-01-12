@@ -29,6 +29,8 @@ public static partial class LocalOnlyEndpoint
             return Results.Problem($"Fund with Id {priceRecord.fundId} does not exist.");
         }
 
+        priceRecord.nonzeroprice = priceRecord.calcnotzeroprice();
+        
         db.PriceRecords.Add(priceRecord);
         try
         {
