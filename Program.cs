@@ -11,17 +11,40 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure Kestrel for HTTPS
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    var pfxPath = "/app/certs/cloudflare-origin.pfx";
+    var certsDir = "/app/certs";
+    var pfxPath = Path.Combine(certsDir, "cloudflare-origin.pfx");
+
+    // Debug: List all files in certs directory
+    Console.WriteLine($"Looking for certificates in: {certsDir}");
+    if (Directory.Exists(certsDir))
+    {
+        Console.WriteLine("Directory exists. Files found:");
+        foreach (var file in Directory.GetFiles(certsDir))
+        {
+            Console.WriteLine($"  - {file}");
+        }
+    }
+    else
+    {
+        Console.WriteLine("Directory does NOT exist!");
+    }
+
+    Console.WriteLine($"Checking for PFX at: {pfxPath}");
+    Console.WriteLine($"PFX exists: {File.Exists(pfxPath)}");
 
     string? envCertPwd = Environment.GetEnvironmentVariable("CERT_PASSWORD");
 
+    Console.WriteLine($"CERT_PASSWORD environment variable is {(string.IsNullOrEmpty(envCertPwd) ? "not set or empty" : "set")}");
+
     if (File.Exists(pfxPath))
     {
+        Console.WriteLine("Loading HTTPS with PFX certificate...");
         serverOptions.ListenAnyIP(8080); // HTTP
         serverOptions.ListenAnyIP(8081, listenOptions => 
         {
             listenOptions.UseHttps(pfxPath, envCertPwd ?? "");
         });
+        Console.WriteLine("HTTPS configured on port 8081");
     }
     else
     {
