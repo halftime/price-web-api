@@ -1,5 +1,3 @@
-
-
 using Microsoft.EntityFrameworkCore;
 using price_web_api.Data;
 using price_web_api.Models;
@@ -53,6 +51,32 @@ public static partial class RemoteEndPoint
         var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(PriceRecord), new System.Xml.Serialization.XmlRootAttribute("PriceRecord"));
         using var stringWriter = new StringWriter();
         xmlSerializer.Serialize(stringWriter, result);
+        var xmlResult = stringWriter.ToString();
+
+        return Results.Content(xmlResult, "application/xml");
+    }
+
+    public static async Task<IResult> GetPriceRecordsByTickerAsXml(string ticker, PriceContext db)
+    {
+        ticker = ticker.Trim().ToUpper();
+        if (string.IsNullOrWhiteSpace(ticker))
+        {
+            return Results.BadRequest("Ticker cannot be empty.");
+        }
+
+        var priceRecords = await db.PriceRecords
+            .Include(pr => pr.fundData)
+            .Where(pr => pr.fundData.bloombergTicker == ticker)
+            .ToListAsync();
+
+        if (priceRecords.Count == 0)
+        {
+            return Results.NotFound("No price records found.");
+        }
+
+        var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(List<PriceRecord>), new System.Xml.Serialization.XmlRootAttribute("PriceRecords"));
+        using var stringWriter = new StringWriter();
+        xmlSerializer.Serialize(stringWriter, priceRecords);
         var xmlResult = stringWriter.ToString();
 
         return Results.Content(xmlResult, "application/xml");
