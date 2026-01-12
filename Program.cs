@@ -60,6 +60,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PriceContext>(options =>
     options.EnableSensitiveDataLogging()
            .UseSqlite(@"Data Source=/data/prices.db"));
+builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -96,5 +97,6 @@ app.MapGet("pricerecord.xml/{ticker}/{date}", RemoteEndPoint.GetPriceRecordAsXml
 app.MapGet("nonnullprice.xml/{ticker}/{date}", RemoteEndPoint.GetNonNullPriceAsXml);
 //
 
+app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()); 
 
 app.Run();
