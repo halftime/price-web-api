@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     var certsDir = "/app/certs";
-    var pfxPath = Path.Combine(certsDir, "cloudflare-origin.pfx");
+    var pfxPath = Path.Combine(certsDir, "cloudflare.pfx");
 
     // Debug: List all files in certs directory
     Console.WriteLine($"Looking for certificates in: {certsDir}");
