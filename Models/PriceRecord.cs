@@ -8,12 +8,6 @@ using Microsoft.EntityFrameworkCore;
 namespace price_web_api.Models;
 public class PriceRecord
 {
-    private decimal _close;
-    private decimal _nav;
-    private decimal _open;
-    private decimal _high;
-    private decimal _low;
-
     public required int fundId { get; set; }
 
     [ForeignKey("fundId")]
@@ -25,76 +19,57 @@ public class PriceRecord
     public int Key => HashCode.Combine(fundId, date);
 
     [Column(TypeName = "decimal(8,2)")]
-    public decimal close
-    {
-        get => _close;
-        set
-        {
-            _close = value;
-            UpdateNonZeroPrice();
-        }
-    }
+    public decimal close { get; set; }
 
     [Column(TypeName = "decimal(8,2)")]
-    public decimal open
-    {
-        get => _open;
-        set
-        {
-            _open = value;
-            UpdateNonZeroPrice();
-        }
-    }
+    public decimal open { get; set; }
 
     [Column(TypeName = "decimal(8,2)")]
-    public decimal high
-    {
-        get => _high;
-        set
-        {
-            _high = value;
-            UpdateNonZeroPrice();
-        }
-    }
+    public decimal high { get; set; }
 
     [Column(TypeName = "decimal(8,2)")]
-    public decimal low
-    {
-        get => _low;
-        set
-        {
-            _low = value;
-            UpdateNonZeroPrice();
-        }
-    }
+    public decimal low { get; set; }
 
     [Column(TypeName = "decimal(8,2)")]
-    public decimal? nonzeroprice { get; private set; }
+    public decimal? nonzeroprice {get; set;} = null// some records have price as null but nav as non-null
 
+    // [Required(ErrorMessage = "nav required")]
+    // [Range(0.1, double.MaxValue, ErrorMessage = "nav must be greater than 0")]
     [Column(TypeName = "decimal(8,2)")]
-    public decimal nav
-    {
-        get => _nav;
-        set
-        {
-            _nav = value;
-            UpdateNonZeroPrice();
-        }
-    }
+    public decimal nav { get; set; } // sometimes only nav as price is available
 
     public int volume { get; set; }
 
     [Required(ErrorMessage = "date is required")]
     public DateOnly date { get; set; }
 
-    private void UpdateNonZeroPrice()
+    public decimal? calcnotzeroprice()
     {
-        nonzeroprice = _close != 0 ? _close 
-            : _open != 0 ? _open 
-            : _high != 0 ? _high 
-            : _low != 0 ? _low 
-            : _nav != 0 ? _nav 
-            : null;
+        if (nonzeroprice != null)
+        {
+            return nonzeroprice;
+        }
+        if (close != 0)
+        {
+            return close;
+        }
+        if (open != 0)
+        {
+            return open;
+        }
+        if (high != 0)
+        {
+            return high;
+        }
+        if (low != 0)
+        {
+            return low;
+        }
+        if (nav != 0)
+        {
+            return nav;
+        }
+        return null;
     }
 
     public override string ToString()
