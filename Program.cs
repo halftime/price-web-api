@@ -17,7 +17,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
     if (File.Exists(certPath) && File.Exists(keyPath))
     {
         serverOptions.ListenAnyIP(8080); // HTTP
-        serverOptions.ListenAnyIP(8081, listenOptions =>
+        serverOptions.ListenAnyIP(8081, listenOptions => 
         {
             listenOptions.UseHttps(certPath, keyPath);
         });
@@ -65,6 +65,7 @@ app.MapGet("funds/{ticker}", RemoteEndPoint.GetFund);
 app.MapGet("prices/{ticker}", RemoteEndPoint.GetPriceRecordsByTicker);
 app.MapGet("pricerecord/{ticker}/{date}", RemoteEndPoint.GetPriceRecord);
 app.MapGet("pricerecord.xml/{ticker}/{date}", RemoteEndPoint.GetPriceRecordAsXml);
+app.MapGet("nonnullprice/{ticker}/{date}", RemoteEndPoint.GetNonNullPrice);
 //
 
 
