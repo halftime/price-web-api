@@ -31,7 +31,7 @@ public class PriceRecord
     public decimal low { get; set; }
 
     [Column(TypeName = "decimal(8,2)")]
-    public decimal? nonzeroprice {get; set;} = null// some records have price as null but nav as non-null
+    public decimal? nonzeroprice {get; set;} = null; // some records have price as null but nav as non-null
 
     // [Required(ErrorMessage = "nav required")]
     // [Range(0.1, double.MaxValue, ErrorMessage = "nav must be greater than 0")]
