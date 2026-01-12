@@ -19,25 +19,11 @@ public static partial class RemoteEndPoint
 
         Console.WriteLine($"received request to get non null price record for ticker '{ticker}' on date '{parsedDate}'");
 
-        PriceRecord? price_close = await db.PriceRecords
+        PriceRecord? result = await db.PriceRecords
             .Include(pr => pr.fundData)
-            .Where(pr => pr.fundData.bloombergTicker == ticker && pr.date == parsedDate && pr.close > 0)
-            .OrderByDescending(pr => pr.close)
+            .Where(pr => pr.fundData.bloombergTicker == ticker && pr.date == parsedDate)
+            .Where(pr => pr.nonzeroprice != null)
             .FirstOrDefaultAsync();
-
-        PriceRecord? price_open = await db.PriceRecords
-            .Include(pr => pr.fundData)
-            .Where(pr => pr.fundData.bloombergTicker == ticker && pr.date == parsedDate && pr.open > 0)
-            .OrderByDescending(pr => pr.open)
-            .FirstOrDefaultAsync();
-
-        PriceRecord? price_nav = await db.PriceRecords
-            .Include(pr => pr.fundData)
-            .Where(pr => pr.fundData.bloombergTicker == ticker && pr.date == parsedDate && pr.nav > 0)
-            .OrderByDescending(pr => pr.nav)
-            .FirstOrDefaultAsync();
-
-        PriceRecord? result = price_close ?? price_open ?? price_nav;
 
         return result is not null ? Results.Ok(result) : Results.NotFound();
     }

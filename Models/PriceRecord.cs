@@ -8,8 +8,6 @@ using Microsoft.EntityFrameworkCore;
 namespace price_web_api.Models;
 public class PriceRecord
 {
-
-
     public required int fundId { get; set; }
 
     [ForeignKey("fundId")]
@@ -32,10 +30,12 @@ public class PriceRecord
     [Column(TypeName = "decimal(8,2)")]
     public decimal low { get; set; }
 
-    [Required(ErrorMessage = "nav required")]
-    [Range(0.1, double.MaxValue, ErrorMessage = "nav must be greater than 0")]
+    public decimal? nonzeroprice => close > 0 ? close : open > 0 ? open : low > 0 ? low : high > 0 ? high : nav;
+
+    // [Required(ErrorMessage = "nav required")]
+    // [Range(0.1, double.MaxValue, ErrorMessage = "nav must be greater than 0")]
     [Column(TypeName = "decimal(8,2)")]
-    public decimal nav { get; set; }
+    public decimal nav { get; set; } // sometimes only nav as price is available
 
     public int volume { get; set; }
 
