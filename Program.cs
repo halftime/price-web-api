@@ -11,15 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure Kestrel for HTTPS
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    var certPath = "/app/certs/cloudflare-origin.pem";
-    var keyPath = "/app/certs/cloudflare-origin.key";
+    var pfxPath = "/app/certs/cloudflare-origin.pfx";
 
-    if (File.Exists(certPath) && File.Exists(keyPath))
+    string? envCertPwd = Environment.GetEnvironmentVariable("CERT_PASSWORD");
+
+    if (File.Exists(pfxPath))
     {
         serverOptions.ListenAnyIP(8080); // HTTP
         serverOptions.ListenAnyIP(8081, listenOptions => 
         {
-            listenOptions.UseHttps(certPath, keyPath);
+            listenOptions.UseHttps(pfxPath, envCertPwd ?? "");
         });
     }
     else
