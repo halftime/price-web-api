@@ -21,8 +21,7 @@ public static partial class RemoteEndPoint
 
         PriceRecord? result = await db.PriceRecords
             .Include(pr => pr.fundData)
-            .Where(pr => pr.fundData.bloombergTicker == ticker && pr.date == parsedDate)
-            .Where(pr => pr.nonzeroprice != null)
+            .Where(pr => pr.fundData.bloombergTicker == ticker && pr.date == parsedDate && pr.nonzeroprice != null)
             .FirstOrDefaultAsync();
 
         return result is not null ? Results.Ok(result) : Results.NotFound();
