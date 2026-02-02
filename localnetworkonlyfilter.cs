@@ -8,6 +8,7 @@ public class LocalNetworkOnlyFilter : IEndpointFilter
         "192.168.1.",         // 192.168.1.x range (optional)
         "172.17.0.",        // 172.17.x.x range (Docker default)
         "172.18.0.",        // 172.18.x.x range (Docker alternative)
+        "192.168.129."  // new range for local net
     };
 
     public async ValueTask<object?> InvokeAsync(

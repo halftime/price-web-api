@@ -41,7 +41,15 @@ public class PriceRecord
     public int volume { get; set; }
 
     [Required(ErrorMessage = "date is required")]
+    [XmlIgnore]
     public DateOnly date { get; set; }
+
+    [XmlElement("date")]
+    public string DateString
+    {
+        get => date.ToString("yyyy-MM-dd");
+        set => date = DateOnly.Parse(value);
+    }
 
     public decimal? calcnotzeroprice()
     {
