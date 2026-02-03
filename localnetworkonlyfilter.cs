@@ -2,14 +2,14 @@ using System.Net;
 
 public class LocalNetworkOnlyFilter : IEndpointFilter
 {
-    private static readonly HashSet<string> AllowedSubnets = new()
-    {
+    private static readonly HashSet<string> AllowedSubnets =
+    [
         "192.168.0.",         // 192.168.0.x range
         "192.168.1.",         // 192.168.1.x range (optional)
         "172.17.0.",        // 172.17.x.x range (Docker default)
         "172.18.0.",        // 172.18.x.x range (Docker alternative)
         "192.168.129."  // new range for local net
-    };
+    ];
 
     public async ValueTask<object?> InvokeAsync(
         EndpointFilterInvocationContext context, EndpointFilterDelegate next)
@@ -29,7 +29,7 @@ public class LocalNetworkOnlyFilter : IEndpointFilter
         var ipString = remoteIp.ToString();
 
         // Check if IP matches any allowed subnet prefix
-        if (AllowedSubnets.Any(subnet => ipString.StartsWith(subnet)))
+        if (AllowedSubnets.Any(ipString.StartsWith))
         {
             Console.WriteLine($"localnetworkfilter \t IP: {remoteIp} is in allowed subnet, OK");
             return await next(context);
