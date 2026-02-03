@@ -44,13 +44,13 @@ public class PriceRecord
     [XmlIgnore]
     public DateOnly date { get; set; }
 
-    [XmlElement("date")]
-    [NotMapped]
-    public string DateString
-    {
-        get => date.ToString("yyyy-MM-dd");
-        set => date = DateOnly.Parse(value);
-    }
+    // [XmlElement("date")]
+    // [NotMapped]
+    // public string DateString
+    // {
+    //     get => date.ToString("yyyy-MM-dd");
+    //     set => date = DateOnly.Parse(value);
+    // }
 
     public decimal? calcnotzeroprice()
     {
