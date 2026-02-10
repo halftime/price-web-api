@@ -30,6 +30,16 @@ public static partial class LocalOnlyEndpoint
         }
 
         priceRecord.nonzeroprice = priceRecord.calcnotzeroprice();
+
+        var existingRecord = await db.PriceRecords
+            .FirstOrDefaultAsync(pr => pr.fundId == priceRecord.fundId && pr.date == priceRecord.date);
+        if (existingRecord != null)
+        {
+            db.Entry(existingRecord).CurrentValues.SetValues(priceRecord);
+            existingRecord.nonzeroprice = priceRecord.nonzeroprice;
+            await db.SaveChangesAsync();
+            return Results.Ok(existingRecord);
+        }
         
         db.PriceRecords.Add(priceRecord);
         try
