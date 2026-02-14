@@ -87,7 +87,8 @@ app.MapPost("addfund", LocalOnlyEndpoint.AddFund).AddEndpointFilter<LocalNetwork
 
 
 // Get methods for retrieving records
-app.MapGet("funds/{ticker}", RemoteEndPoint.GetFund);
+app.MapGet("fund/{ticker}", RemoteEndPoint.GetFund);
+app.MapGet("fund.xml/{ticker}", RemoteEndPoint.GetFundAsXml);
 app.MapGet("prices/{ticker}", RemoteEndPoint.GetPriceRecordsByTicker);
 
 app.MapGet("prices.xml/{ticker}", RemoteEndPoint.GetPriceRecordsByTickerAsXml);

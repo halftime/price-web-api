@@ -21,7 +21,7 @@ Because [googlefinance()](https://support.google.com/docs/answer/3093281?hl=en) 
 
 | Function  | url endpoint |
 | ------------- | ------------- |
-| Get ETF/ETC details from ticker | /funds/{ticker}  |
+| Get ETF/ETC details from ticker | /fund/{ticker}  |
 | Get all daily data for a ticker  | /prices/{ticker}  |
 | Get daily data record  | /pricerecord/{ticker}/{date}  |
 | Get daily data record in XML | /pricerecord.xml/{ticker}/{date}  |
