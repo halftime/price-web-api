@@ -16,5 +16,6 @@ public class FundInfo
     public required string iSIN { get; set; }
 
     [JsonIgnore]
+    [System.Xml.Serialization.XmlIgnore]
     public ICollection<PriceRecord> priceRecords { get; set; } = new List<PriceRecord>();
 }
