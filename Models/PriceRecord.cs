@@ -54,30 +54,16 @@ public class PriceRecord
 
     public decimal? calcnotzeroprice()
     {
-        if (nonzeroprice != null)
+        decimal?[] candidates = [nonzeroprice, close, open, high, low, nav];
+
+        foreach (var candidate in candidates)
         {
-            return nonzeroprice;
+            if (candidate is decimal value && value != 0m)
+            {
+                return value;
+            }
         }
-        if (close != 0)
-        {
-            return close;
-        }
-        if (open != 0)
-        {
-            return open;
-        }
-        if (high != 0)
-        {
-            return high;
-        }
-        if (low != 0)
-        {
-            return low;
-        }
-        if (nav != 0)
-        {
-            return nav;
-        }
+
         return null;
     }
 

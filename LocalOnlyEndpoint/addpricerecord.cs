@@ -30,6 +30,10 @@ public static partial class LocalOnlyEndpoint
         }
 
         priceRecord.nonzeroprice = priceRecord.calcnotzeroprice();
+        if (priceRecord.nonzeroprice is null)
+        {
+            return Results.BadRequest("Validation failed: computed nonzeroprice is null. At least one of nonzeroprice, close, open, high, low, or nav must be non-zero.");
+        }
 
         var existingRecord = await db.PriceRecords
             .FirstOrDefaultAsync(pr => pr.fundId == priceRecord.fundId && pr.date == priceRecord.date);
