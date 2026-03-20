@@ -57,9 +57,12 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+var dbDirectory = "/data/pricewebapi";
+Directory.CreateDirectory(dbDirectory);
+var dbPath = Path.Combine(dbDirectory, "prices.db");
 builder.Services.AddDbContext<PriceContext>(options =>
     options.EnableSensitiveDataLogging()
-           .UseSqlite(@"Data Source=/data/prices.db"));
+           .UseSqlite($"Data Source={dbPath}"));
 builder.Services.AddCors();
 
 var app = builder.Build();
