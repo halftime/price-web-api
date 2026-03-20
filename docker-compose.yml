@@ -10,6 +10,7 @@ services:
     image: price-web-api:arm64
     volumes:
       - ./certs:/home/admin/certs:ro
+      - ./data:/data
 
     ports:
       - "8080:8080"
