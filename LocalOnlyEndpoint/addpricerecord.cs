@@ -19,21 +19,21 @@ public static partial class LocalOnlyEndpoint
         }
 
         // Require symbol in the payload
-        if (string.IsNullOrWhiteSpace(priceRecord.Symbol))
+        if (string.IsNullOrWhiteSpace(priceRecord.symbol))
         {
             return Results.BadRequest("Symbol is required in the price record.");
         }
 
         // Find investment by symbol (case-insensitive)
-        var normalizedSymbol = priceRecord.Symbol.Trim().ToUpper();
+        var normalizedSymbol = priceRecord.symbol.Trim().ToUpper();
         var investment = await db.Investments.FirstOrDefaultAsync(i => i.Symbol.ToUpper() == normalizedSymbol);
         if (investment == null)
         {
-            return Results.BadRequest($"No investment found with symbol '{priceRecord.Symbol}'.");
+            return Results.BadRequest($"No investment found with symbol '{priceRecord.symbol}'.");
         }
 
         // Check for existing price record by investment id and date
-        MinimalPriceRec? existingRecord = await db.PriceRecords.FirstOrDefaultAsync(pr => pr.Symbol.ToLower() == investment.Symbol.ToLower() && pr.date == priceRecord.date);
+        MinimalPriceRec? existingRecord = await db.PriceRecords.FirstOrDefaultAsync(pr => pr.symbol.ToLower() == investment.Symbol.ToLower() && pr.date == priceRecord.date);
         if (existingRecord != null)
         {
             // Conflict: record already exists, do update and return
@@ -47,7 +47,7 @@ public static partial class LocalOnlyEndpoint
         try
         {
             int savedchanges = await db.SaveChangesAsync();
-            Console.WriteLine($"SaveChangesAsync returned {savedchanges} when adding price record for symbol={priceRecord.Symbol} on date={priceRecord.date:yyyy-MM-dd}");
+            Console.WriteLine($"SaveChangesAsync returned {savedchanges} when adding price record for symbol={priceRecord.symbol} on date={priceRecord.date:yyyy-MM-dd}");
         }
         catch (DbUpdateConcurrencyException ex) // duplicate 
         {
@@ -62,7 +62,7 @@ public static partial class LocalOnlyEndpoint
             return Results.Problem($"Unexpected error while adding price record: {ex.Message}");
         }
 
-        Console.WriteLine($"Price record added: symbol={priceRecord.Symbol}, date={priceRecord.date:yyyy-MM-dd}");
+        Console.WriteLine($"Price record added: symbol={priceRecord.symbol}, date={priceRecord.date:yyyy-MM-dd}");
         // Return Created with the correct URI (no named route needed)
         return Results.Created($"/pricerecord/{investment.Symbol}/{priceRecord.date:yyyy-MM-dd}", priceRecord);
     }

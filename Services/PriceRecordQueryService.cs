@@ -21,7 +21,7 @@ public sealed class PriceRecordQueryService(PriceContext db) : IPriceRecordQuery
             .FirstOrDefault();
 
         return db.PriceRecords.AsNoTracking()
-            .Where(pr => pr.Symbol.ToUpper() == normalizedTicker && pr.date == date)
+            .Where(pr => pr.symbol.ToUpper() == normalizedTicker && pr.date == date)
             .FirstOrDefaultAsync(cancellationToken);
     }
 
@@ -33,6 +33,6 @@ public sealed class PriceRecordQueryService(PriceContext db) : IPriceRecordQuery
         //     .Where(i => i.Symbol == normalizedTicker)
         //     .FirstOrDefaultAsync(cancellationToken);
 
-        return await db.PriceRecords.AsNoTracking().Where(pr => pr.Symbol.ToUpper() == normalizedTicker).ToListAsync(cancellationToken);
+        return await db.PriceRecords.AsNoTracking().Where(pr => pr.symbol.ToUpper() == normalizedTicker).ToListAsync(cancellationToken);
     }
 }

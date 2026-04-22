@@ -22,7 +22,7 @@ public class PriceContext : DbContext
             .IsUnique();
 
         modelBuilder.Entity<MinimalPriceRec>()
-            .HasKey(pr => new { pr.Symbol, pr.date });
+            .HasKey(pr => new { pr.symbol, pr.date });
 
     }
 }

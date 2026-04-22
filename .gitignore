@@ -10,3 +10,5 @@ migrations/*
 *.db-shm
 *.db-wal
 .fake
+
+*.pfx

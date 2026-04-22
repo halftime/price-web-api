@@ -1,16 +1,14 @@
 services:
   pricewebapi:
-    image: igncdev/price-web-api-test:arm64
-    pull_policy: always
-    
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
       - "8081:8081"
-
     volumes:
-      - /home/pi/Desktop/certs:/app/certs:ro
-      - pricewebapi-data:/data/pricewebapi
-
+      - ./certs:/app/certs:ro
+      - ./Data/pricewebapi:/data/pricewebapi
     environment:
       - ASPNETCORE_URLS=https://+:8081;http://+:8080
       - ASPNETCORE_HTTPS_PORT=8081
@@ -18,8 +16,4 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/cloudflare.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=cloudflare
       - CERT_PASSWORD=cloudflare
-
     restart: unless-stopped
-
-volumes:
-  pricewebapi-data:

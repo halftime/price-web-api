@@ -19,7 +19,7 @@ public class MinimalPriceRec
     // public virtual Investment? Investment { get; set; }
 
     [Required]
-    public required string Symbol { get; set; } = string.Empty;
+    public required string symbol { get; set; } = string.Empty;
 
     [Column(TypeName = "decimal(8,2)")]
     [Required(ErrorMessage = "price is required")]
