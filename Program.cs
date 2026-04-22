@@ -9,12 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Kestrel for HTTPS using PEM key/cert
+// Configure Kestrel for HTTPS using PFX
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     var certsDir = "/app/certs";
-    var certPath = Path.Combine(certsDir, "cloudflare-origin.pem");
-    var keyPath = Path.Combine(certsDir, "cloudflare-origin.key");
+    var pfxPath = Path.Combine(certsDir, "cloudflare.pfx");
 
     // Debug: List all files in certs directory
     Console.WriteLine($"Looking for certificates in: {certsDir}");
@@ -31,18 +30,19 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
         Console.WriteLine("Directory does NOT exist!");
     }
 
-    Console.WriteLine($"Checking for PEM cert at: {certPath}");
-    Console.WriteLine($"Cert exists: {File.Exists(certPath)}");
-    Console.WriteLine($"Checking for PEM key at: {keyPath}");
-    Console.WriteLine($"Key exists: {File.Exists(keyPath)}");
+    Console.WriteLine($"Checking for PFX at: {pfxPath}");
+    Console.WriteLine($"PFX exists: {File.Exists(pfxPath)}");
 
-    if (File.Exists(certPath) && File.Exists(keyPath))
+    string? envCertPwd = Environment.GetEnvironmentVariable("CERT_PASSWORD");
+    Console.WriteLine($"CERT_PASSWORD environment variable is {(string.IsNullOrEmpty(envCertPwd) ? "not set or empty" : "set")}");
+
+    if (File.Exists(pfxPath))
     {
-        Console.WriteLine("Loading HTTPS with PEM certificate and key...");
+        Console.WriteLine("Loading HTTPS with PFX certificate...");
         serverOptions.ListenAnyIP(8080); // HTTP
         serverOptions.ListenAnyIP(8081, listenOptions =>
         {
-            listenOptions.UseHttps(certPath, keyPath);
+            listenOptions.UseHttps(pfxPath, envCertPwd ?? "");
         });
         Console.WriteLine("HTTPS configured on port 8081");
     }
@@ -50,7 +50,7 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
     {
         // Fallback to HTTP only if certs not found
         serverOptions.ListenAnyIP(8080);
-        Console.WriteLine("PEM certificates not found at /app/certs/, running HTTP only.");
+        Console.WriteLine("HTTPS certificates not found at /app/certs/, running HTTP only.");
     }
 });
 

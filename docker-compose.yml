@@ -19,4 +19,5 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/cloudflare.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=cloudflare
+        - CERT_PASSWORD=cloudflare
     restart: unless-stopped
