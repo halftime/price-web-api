@@ -9,6 +9,10 @@ services:
     pull_policy: always
     volumes:
       - /home/pi/Desktop/certs:/app/certs:ro
+      - pricewebapi-data:/data/pricewebapi
+      
+volumes:
+  pricewebapi-data:
 
     ports:
       - "8080:8080"
