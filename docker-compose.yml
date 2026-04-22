@@ -6,6 +6,7 @@ services:
       platforms:
         - linux/arm64
     image: igncdev/price-web-api:arm64
+    pull_policy: always
     volumes:
       - /home/pi/Desktop/certs:/app/certs:ro
 
@@ -19,5 +20,5 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/cloudflare.pfx
       - ASPNETCORE_Kestrel__Certificates__Default__Password=cloudflare
-        - CERT_PASSWORD=cloudflare
+      - CERT_PASSWORD=cloudflare
     restart: unless-stopped
