@@ -9,14 +9,16 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Console.WriteLine(">>> Starting Price Web API...");
+
 // Configure Kestrel for HTTPS using PFX
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
     var certsDir = "/app/certs";
-    var pfxPath = Path.Combine(certsDir, "cloudflare.pfx");
+    var pfxPath = Path.Combine(certsDir, "cloudflare.pfx"); //
 
     // Debug: List all files in certs directory
-    Console.WriteLine($"Looking for certificates in: {certsDir}");
+    Console.WriteLine($">>> Looking for certificates in: {certsDir}");
     if (Directory.Exists(certsDir))
     {
         Console.WriteLine("Directory exists. Files found:");
@@ -30,8 +32,8 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
         Console.WriteLine("Directory does NOT exist!");
     }
 
-    Console.WriteLine($"Checking for PFX at: {pfxPath}");
-    Console.WriteLine($"PFX exists: {File.Exists(pfxPath)}");
+    Console.WriteLine($">>> Checking for PFX at: {pfxPath}");
+    Console.WriteLine($">>> PFX exists: {File.Exists(pfxPath)}");
 
     string? envCertPwd = Environment.GetEnvironmentVariable("CERT_PASSWORD");
     Console.WriteLine($"CERT_PASSWORD environment variable is {(string.IsNullOrEmpty(envCertPwd) ? "not set or empty" : "set")}");

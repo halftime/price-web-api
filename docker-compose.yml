@@ -1,6 +1,6 @@
 services:
   pricewebapi:
-    image: igncdev/price-web-api:arm64
+    image: igncdev/price-web-api-test:arm64
     pull_policy: always
 
     # remove build if you want to pull from Docker Hub
