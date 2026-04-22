@@ -7,7 +7,7 @@ services:
         - linux/arm64
     image: igncdev/price-web-api:arm64
     volumes:
-      - ./certs:/home/admin/certs:ro
+      - ./certs:/home/pi/certs:ro
       - ./data:/data
 
     ports:
@@ -18,9 +18,7 @@ services:
       - ASPNETCORE_URLS=https://+:8081;http://+:8080
       - ASPNETCORE_HTTPS_PORT=8081
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=./certs/cloudflare-origin.pem
-      - ASPNETCORE_Kestrel__Certificates__Default__KeyPath=./certs/cloudflare-origin.key
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/certs/cloudflare.pfx
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/cloudflare-origin.pem
+        - ASPNETCORE_Kestrel__Certificates__Default__KeyPath=/app/certs/cloudflare-origin.key
 
-  
     restart: unless-stopped
