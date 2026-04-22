@@ -1,22 +1,19 @@
-using Microsoft.EntityFrameworkCore;
-using price_web_api.Data;
 using price_web_api.Models;
+using price_web_api.Services;
 
 public static partial class RemoteEndPoint
 {
-    public static async Task<IResult> GetPriceRecordAsXml(string ticker, DateOnly date, PriceContext db)
+    public static async Task<IResult> GetPriceRecordAsXml(string ticker, DateOnly date, IPriceRecordQueryService priceRecordQueryService)
     {
         ticker = ticker.Trim().ToUpper();
-        PriceRecord? priceRecord = await db.PriceRecords
-            .Include(pr => pr.fundData)
-            .FirstOrDefaultAsync(pr => pr.fundData.bloombergTicker == ticker && pr.date == date);
+        MinimalPriceRec? priceRecord = await priceRecordQueryService.GetPriceRecordAsync(ticker, date);
 
         if (priceRecord == null)
         {
             return Results.NotFound("No price records found.");
         }
 
-        var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(PriceRecord), new System.Xml.Serialization.XmlRootAttribute("PriceRecord"));
+        var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(MinimalPriceRec), new System.Xml.Serialization.XmlRootAttribute("PriceRecord"));
         using var stringWriter = new StringWriter();
         xmlSerializer.Serialize(stringWriter, priceRecord);
         var xmlResult = stringWriter.ToString();
@@ -24,7 +21,7 @@ public static partial class RemoteEndPoint
         return Results.Content(xmlResult, "application/xml");
     }
 
-    public static async Task<IResult> GetNonNullPriceAsXml(string ticker, string date, PriceContext db)
+    public static async Task<IResult> GetNonNullPriceAsXml(string ticker, string date, IPriceRecordQueryService priceRecordQueryService)
     {
         ticker = ticker.Trim().ToUpper();
         if (string.IsNullOrWhiteSpace(ticker))
@@ -38,17 +35,14 @@ public static partial class RemoteEndPoint
 
         Console.WriteLine($"received request to get non null price record for ticker '{ticker}' on date '{parsedDate}'");
 
-        PriceRecord? result = await db.PriceRecords
-            .Include(pr => pr.fundData)
-            .Where(pr => pr.fundData.bloombergTicker == ticker && pr.date == parsedDate)
-            .FirstOrDefaultAsync();
+        MinimalPriceRec? result = await priceRecordQueryService.GetPriceRecordAsync(ticker, parsedDate);
 
         if (result is null)
         {
             return Results.NotFound();
         }
 
-        var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(PriceRecord), new System.Xml.Serialization.XmlRootAttribute("PriceRecord"));
+        var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(MinimalPriceRec), new System.Xml.Serialization.XmlRootAttribute("PriceRecord"));
         using var stringWriter = new StringWriter();
         xmlSerializer.Serialize(stringWriter, result);
         var xmlResult = stringWriter.ToString();
@@ -56,7 +50,7 @@ public static partial class RemoteEndPoint
         return Results.Content(xmlResult, "application/xml");
     }
 
-    public static async Task<IResult> GetPriceRecordsByTickerAsXml(string ticker, PriceContext db)
+    public static async Task<IResult> GetPriceRecordsByTickerAsXml(string ticker, IPriceRecordQueryService priceRecordQueryService)
     {
         ticker = ticker.Trim().ToUpper();
         if (string.IsNullOrWhiteSpace(ticker))
@@ -64,17 +58,14 @@ public static partial class RemoteEndPoint
             return Results.BadRequest("Ticker cannot be empty.");
         }
 
-        var priceRecords = await db.PriceRecords
-            .Include(pr => pr.fundData)
-            .Where(pr => pr.fundData.bloombergTicker == ticker)
-            .ToListAsync();
+        var priceRecords = await priceRecordQueryService.GetPriceRecordsByTickerAsync(ticker);
 
         if (priceRecords.Count == 0)
         {
             return Results.NotFound("No price records found.");
         }
 
-        var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(List<PriceRecord>), new System.Xml.Serialization.XmlRootAttribute("PriceRecords"));
+        var xmlSerializer = new System.Xml.Serialization.XmlSerializer(typeof(List<MinimalPriceRec>), new System.Xml.Serialization.XmlRootAttribute("PriceRecords"));
         using var stringWriter = new StringWriter();
         xmlSerializer.Serialize(stringWriter, priceRecords);
         var xmlResult = stringWriter.ToString();

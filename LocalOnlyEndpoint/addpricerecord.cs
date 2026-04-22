@@ -7,48 +7,47 @@ using System.ComponentModel.DataAnnotations;
 
 public static partial class LocalOnlyEndpoint
 {
-    public static async Task<IResult> AddPriceRecord(PriceRecord? priceRecord, PriceContext db)
+    public static async Task<IResult> AddPriceRecord(MinimalPriceRec? priceRecord, PriceContext db)
     {
-       if (priceRecord == null)
+        if (priceRecord == null)
         {
-            return Results.BadRequest("Request body is empty or could not be deserialized as PriceRecord.");
+            return Results.BadRequest("Request body is empty or could not be deserialized as MinimalPriceRec.");
+        }
+        if (priceRecord.price <= 0)
+        {
+            return Results.BadRequest("Price must be greater than zero.");
         }
 
-        var validationContext = new ValidationContext(priceRecord);
-        var validationResults = new List<ValidationResult>();
-        if (!Validator.TryValidateObject(priceRecord, validationContext, validationResults, validateAllProperties: true))
+        // Require symbol in the payload
+        if (string.IsNullOrWhiteSpace(priceRecord.Symbol))
         {
-            var errors = string.Join("; ", validationResults.Select(r => r.ErrorMessage));
-            return Results.BadRequest($"Validation failed: {errors}");
+            return Results.BadRequest("Symbol is required in the price record.");
         }
 
-        // Check if the associated FundInfo exists
-        var fundExists = await db.FundInfos.AnyAsync(f => f.fundId == priceRecord.fundId);
-        if (!fundExists)
+        // Find investment by symbol (case-insensitive)
+        var normalizedSymbol = priceRecord.Symbol.Trim().ToUpper();
+        var investment = await db.Investments.FirstOrDefaultAsync(i => i.Symbol.ToUpper() == normalizedSymbol);
+        if (investment == null)
         {
-            return Results.Problem($"Fund with Id {priceRecord.fundId} does not exist.");
+            return Results.BadRequest($"No investment found with symbol '{priceRecord.Symbol}'.");
         }
 
-        priceRecord.nonzeroprice = priceRecord.calcnotzeroprice();
-        if (priceRecord.nonzeroprice is null)
-        {
-            return Results.BadRequest("Validation failed: computed nonzeroprice is null. At least one of nonzeroprice, close, open, high, low, or nav must be non-zero.");
-        }
-
-        var existingRecord = await db.PriceRecords
-            .FirstOrDefaultAsync(pr => pr.fundId == priceRecord.fundId && pr.date == priceRecord.date);
+        // Check for existing price record by investment id and date
+        MinimalPriceRec? existingRecord = await db.PriceRecords.FirstOrDefaultAsync(pr => pr.Symbol.ToLower() == investment.Symbol.ToLower() && pr.date == priceRecord.date);
         if (existingRecord != null)
         {
-            db.Entry(existingRecord).CurrentValues.SetValues(priceRecord);
-            existingRecord.nonzeroprice = priceRecord.nonzeroprice;
+            // Conflict: record already exists, do update and return
+            existingRecord.price = priceRecord.price;
             await db.SaveChangesAsync();
-            return Results.Ok(existingRecord);
+            return Results.Conflict(existingRecord);
         }
-        
+
+        // Set the correct InvestmentId
         db.PriceRecords.Add(priceRecord);
         try
         {
-            await db.SaveChangesAsync();
+            int savedchanges = await db.SaveChangesAsync();
+            Console.WriteLine($"SaveChangesAsync returned {savedchanges} when adding price record for symbol={priceRecord.Symbol} on date={priceRecord.date:yyyy-MM-dd}");
         }
         catch (DbUpdateConcurrencyException ex) // duplicate 
         {
@@ -63,8 +62,8 @@ public static partial class LocalOnlyEndpoint
             return Results.Problem($"Unexpected error while adding price record: {ex.Message}");
         }
 
-        Console.WriteLine($"Price record added: {priceRecord.Key} on {priceRecord.date}");
-
-        return Results.Created($"/prices/{priceRecord.Key}/{priceRecord.date}", priceRecord);
+        Console.WriteLine($"Price record added: symbol={priceRecord.Symbol}, date={priceRecord.date:yyyy-MM-dd}");
+        // Return Created with the correct URI (no named route needed)
+        return Results.Created($"/pricerecord/{investment.Symbol}/{priceRecord.date:yyyy-MM-dd}", priceRecord);
     }
 }

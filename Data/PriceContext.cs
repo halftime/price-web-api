@@ -6,19 +6,23 @@ namespace price_web_api.Data;
 public class PriceContext : DbContext
 {
     public PriceContext(DbContextOptions<PriceContext> options) : base(options) { }
-    public DbSet<PriceRecord> PriceRecords { get; set; }
-    public DbSet<FundInfo> FundInfos { get; set; }
+    public DbSet<Investment> Investments { get; set; } = null!;
+    public DbSet<MinimalPriceRec> PriceRecords { get; set; } = null!;
+    public DbSet<Fund> FundInfos { get; set; } = null!;
+    public DbSet<PreciousMetal> PreciousMetals { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<FundInfo>()
-            .HasKey(f => f.fundId);
 
-        modelBuilder.Entity<PriceRecord>()
-            .HasKey(pr => new { pr.fundId, pr.date });
+        modelBuilder.Entity<Investment>()
+            .HasKey(i => i.Id);
 
-        modelBuilder.Entity<PriceRecord>()
-            .HasOne(pr => pr.fundData)
-            .WithMany(f => f.priceRecords);
+        modelBuilder.Entity<Investment>()
+            .HasIndex(i => i.Symbol)
+            .IsUnique();
+
+        modelBuilder.Entity<MinimalPriceRec>()
+            .HasKey(pr => new { pr.Symbol, pr.date });
+
     }
 }

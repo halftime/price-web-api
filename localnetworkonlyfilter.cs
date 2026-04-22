@@ -26,6 +26,13 @@ public class LocalNetworkOnlyFilter : IEndpointFilter
         if (remoteIp.IsIPv4MappedToIPv6)
             remoteIp = remoteIp.MapToIPv4();
 
+        // Always allow loopback addresses (127.0.0.1 and ::1).
+        if (IPAddress.IsLoopback(remoteIp))
+        {
+            Console.WriteLine($"localnetworkfilter \t IP: {remoteIp} is loopback, OK");
+            return await next(context);
+        }
+
         var ipString = remoteIp.ToString();
 
         // Check if IP matches any allowed subnet prefix

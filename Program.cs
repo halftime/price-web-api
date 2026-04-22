@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using price_web_api.Data;
 using price_web_api.Models;
+using price_web_api.Services;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -63,6 +64,8 @@ var dbPath = Path.Combine(dbDirectory, "prices.db");
 builder.Services.AddDbContext<PriceContext>(options =>
     options.EnableSensitiveDataLogging()
            .UseSqlite($"Data Source={dbPath}"));
+builder.Services.AddScoped<IPriceRecordQueryService, PriceRecordQueryService>();
+builder.Services.AddScoped<IInvestmentCommandService, InvestmentCommandService>();
 builder.Services.AddCors();
 
 var app = builder.Build();
@@ -75,32 +78,35 @@ var app = builder.Build();
 //     app.UseHttpsRedirection();
 // }
 
-// Ensure SQLite database is created
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<PriceContext>();
-    db.Database.EnsureCreated();
-}
+// Database schema is managed by EF Core migrations.
 
 // Post methods for creating records 
 // Local network only
 app.MapPost("addpricerecord", LocalOnlyEndpoint.AddPriceRecord).AddEndpointFilter<LocalNetworkOnlyFilter>();
+
 app.MapPost("addfund", LocalOnlyEndpoint.AddFund).AddEndpointFilter<LocalNetworkOnlyFilter>();
+app.MapPost("addmetal", LocalOnlyEndpoint.AddMetal).AddEndpointFilter<LocalNetworkOnlyFilter>();
+
+//app.MapPost("addinvestment", LocalOnlyEndpoint.AddFund).AddEndpointFilter<LocalNetworkOnlyFilter>();
 // ***
 
 
 // Get methods for retrieving records
-app.MapGet("fund/{ticker}", RemoteEndPoint.GetFund);
-app.MapGet("fund.xml/{ticker}", RemoteEndPoint.GetFundAsXml);
+app.MapGet("investments", RemoteEndPoint.GetInvestments);
+
+app.MapGet("investment/{ticker}", RemoteEndPoint.GetInvestmentByTicker);
+
+app.MapGet("info.xml/{ticker}", RemoteEndPoint.GetInvestmentInfoAsXml);
 app.MapGet("prices/{ticker}", RemoteEndPoint.GetPriceRecordsByTicker);
 
-app.MapGet("prices.xml/{ticker}", RemoteEndPoint.GetPriceRecordsByTickerAsXml);
+app.MapGet("prices.xml/{ticker}", RemoteEndPoint.GetPriceRecordsByTickerAsXml);     
 app.MapGet("pricerecord/{ticker}/{date}", RemoteEndPoint.GetPriceRecord);
 app.MapGet("pricerecord.xml/{ticker}/{date}", RemoteEndPoint.GetPriceRecordAsXml);
 
 app.MapGet("nonnullprice.xml/{ticker}/{date}", RemoteEndPoint.GetNonNullPriceAsXml);
 //
 
-app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()); 
+
+app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 app.Run();

@@ -2,6 +2,7 @@
 /bin/**
 /obj/**
 
+migrations/*
 *secret*
 
 # Ignore SQLite and other local databases
