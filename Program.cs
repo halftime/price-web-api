@@ -69,6 +69,13 @@ builder.Services.AddCors();
 
 var app = builder.Build();
 
+// Ensure database and tables are created at runtime (no migrations required)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<PriceContext>();
+    db.Database.EnsureCreated();
+}
+
 // Configure HTTPS redirection and HSTS
 // Only enable HTTPS redirection if in production AND you want to force HTTPS
 // if (!app.Environment.IsDevelopment())
